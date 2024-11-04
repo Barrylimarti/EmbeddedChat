@@ -18,6 +18,7 @@ export const MessageAggregator = ({
   shouldRender,
   searchProps,
   searchFiltered,
+  setSelectedMessageId,
   fetching,
   type = 'message',
   viewType = 'Sidebar',
@@ -44,7 +45,7 @@ export const MessageAggregator = ({
 
   const noMessages = messageList?.length === 0 || !messageRendered;
   const ViewComponent = viewType === 'Popup' ? Popup : Sidebar;
-
+  
   return (
     <ViewComponent
       title={title}
@@ -96,8 +97,9 @@ export const MessageAggregator = ({
                     newDay={false}
                     type="default"
                     showAvatar
-                    showToolbox={false}
+                    showToolbox={true}
                     showRoles={false}
+                    setSelectedMessageId={setSelectedMessageId}
                     isInSidebar
                     style={{
                       paddingLeft: '0.75rem',

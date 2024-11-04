@@ -1,5 +1,5 @@
 /* eslint-disable no-shadow */
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import {
@@ -31,6 +31,7 @@ const ChatBody = ({
   showRoles,
   messageListRef,
   scrollToBottom,
+  selectedMessageId
 }) => {
   const { classNames, styleOverrides } = useComponentOverrides('ChatBody');
 
@@ -39,7 +40,8 @@ const ChatBody = ({
   const [popupVisible, setPopupVisible] = useState(false);
   const [, setIsUserScrolledUp] = useState(false);
   const [otherUserMessage, setOtherUserMessage] = useState(false);
-
+  
+  const messagesRef=useRef({});
   const { RCInstance, ECOptions } = useContext(RCContext);
   const messages = useMessageStore((state) => state.messages);
   const threadMessages = useMessageStore((state) => state.threadMessages);
@@ -201,7 +203,17 @@ const ChatBody = ({
       showNewMessagesPopup();
     }
   }, [scrollPosition, otherUserMessage, messageListRef]);
-
+  useEffect(() => {
+    console.log("sle",selectedMessageId)
+    console.log("ref",messagesRef)
+    if (selectedMessageId && messagesRef.current[selectedMessageId]) {
+      
+      messagesRef.current[selectedMessageId].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  }, [messagesRef,selectedMessageId]);
   return (
     <>
       <Box
@@ -227,7 +239,7 @@ const ChatBody = ({
             threadMessages={threadMessages}
           />
         ) : (
-          <MessageList messages={messages} />
+          <MessageList messages={messages} ref={messagesRef}/>
         )}
 
         <TotpModal handleLogin={handleLogin} />
@@ -254,4 +266,5 @@ export default ChatBody;
 ChatBody.propTypes = {
   anonymousMode: PropTypes.bool,
   showRoles: PropTypes.bool,
+  selectedMessageId:PropTypes.string
 };

@@ -22,6 +22,7 @@ export const MessageToolbox = ({
   isThreadMessage = false,
   authenticatedUserId,
   handleOpenThread,
+  handleJumpToMessage,
   handleEmojiClick,
   handlePinMessage,
   handleStarMessage,
@@ -124,7 +125,7 @@ export const MessageToolbox = ({
       delete: {
         label: 'Delete',
         id: 'delete',
-        onClick: () => setShowDeleteModal(true),
+        onClick: () => handleJumpToMessage(),
         iconName: 'trash',
         visible: message.u._id === authenticatedUserId,
         type: 'destructive',

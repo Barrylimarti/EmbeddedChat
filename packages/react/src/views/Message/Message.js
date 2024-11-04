@@ -1,4 +1,4 @@
-import React, { memo, useContext } from 'react';
+import React, { forwardRef, memo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import {
@@ -25,8 +25,9 @@ import { getMessageStyles } from './Message.styles';
 import useBubbleStyles from './BubbleVariant/useBubbleStyles';
 import UiKitMessageBlock from './uiKit/UiKitMessageBlock';
 
-const Message = ({
+const Message = forwardRef(({
   message,
+  setSelectedMessageId,
   type = 'default',
   sequential = false,
   lastSequential = false,
@@ -38,7 +39,8 @@ const Message = ({
   showRoles = true,
   isLinkPreview = true,
   isInSidebar = false,
-}) => {
+  
+},ref) => {
   const { classNames, styleOverrides, variantOverrides } =
     useComponentOverrides(
       'Message',
@@ -88,7 +90,7 @@ const Message = ({
       });
     }
   };
-
+  
   const handlePinMessage = async (msg) => {
     const isPinned = msg.pinned;
     const pinOrUnpin = isPinned
@@ -132,6 +134,9 @@ const Message = ({
     openThread(msg);
   };
 
+  const handleJumpToMessage=async()=>{
+    setSelectedMessageId(message._id)
+  }
   const isStarred = message.starred?.find((u) => u._id === authenticatedUserId);
   const isPinned = message.pinned;
   const shouldShowHeader = !sequential || (!showAvatar && isStarred);
@@ -139,6 +144,7 @@ const Message = ({
   return (
     <>
       <Box
+        ref={ref}
         className={appendClassNames('ec-message', classNames)}
         css={[
           variantStyles.messageParent || styles.main,
@@ -203,6 +209,7 @@ const Message = ({
                     handleOpenThread={handleOpenThread}
                     handleDeleteMessage={handleDeleteMessage}
                     handleStarMessage={handleStarMessage}
+                    handleJumpToMessage={handleJumpToMessage}
                     handlePinMessage={handlePinMessage}
                     handleEditMessage={() => {
                       if (editMessage._id === message._id) {
@@ -274,13 +281,14 @@ const Message = ({
       )}
     </>
   );
-};
+})
 Message.propTypes = {
   message: PropTypes.any,
   sequential: PropTypes.bool,
   newDay: PropTypes.bool,
   type: PropTypes.oneOf(['thread', 'default']),
   showAvatar: PropTypes.bool,
+  setSelectedMessageId:PropTypes.func
 };
 
 export default memo(Message);

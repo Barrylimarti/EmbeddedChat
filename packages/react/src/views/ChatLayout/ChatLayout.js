@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef,useState,useEffect } from 'react';
 import { Box, useComponentOverrides } from '@embeddedchat/ui-elements';
 import styles from './ChatLayout.styles';
 import {
@@ -64,7 +64,8 @@ const ChatLayout = () => {
       uiKitContextualBarData: state.uiKitContextualBarData,
     })
   );
-
+  const [selectedMessageId, setSelectedMessageId] = useState(null);
+  
   const scrollToBottom = () => {
     if (messageListRef && messageListRef.current) {
       requestAnimationFrame(() => {
@@ -72,7 +73,7 @@ const ChatLayout = () => {
       });
     }
   };
-
+  
   return (
     <Box
       css={styles.layout}
@@ -89,6 +90,7 @@ const ChatLayout = () => {
           showRoles={showRoles}
           messageListRef={messageListRef}
           scrollToBottom={scrollToBottom}
+          selectedMessageId={selectedMessageId}
         />
         <ChatInput scrollToBottom={scrollToBottom} />
         <div id="emoji-popup" />
@@ -103,7 +105,7 @@ const ChatLayout = () => {
           {showAllFiles && <FileGallery />}
           {showMentions && <MentionedMessages />}
           {showPinned && <PinnedMessages />}
-          {showStarred && <StarredMessages />}
+          {showStarred && <StarredMessages setSelectedMessageId={setSelectedMessageId}/>}
           {showCurrentUserInfo && <UserInformation />}
           {uiKitContextualBarOpen && (
             <UiKitContextualBar

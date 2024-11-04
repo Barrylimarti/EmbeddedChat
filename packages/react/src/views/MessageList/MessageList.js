@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import { isSameDay } from 'date-fns';
@@ -9,17 +9,16 @@ import isMessageSequential from '../../lib/isMessageSequential';
 import { Message } from '../Message';
 import isMessageLastSequential from '../../lib/isMessageLastSequential';
 
-const MessageList = ({ messages }) => {
+const MessageList = forwardRef((props,ref) => {
   const showReportMessage = useMessageStore((state) => state.showReportMessage);
   const messageToReport = useMessageStore((state) => state.messageToReport);
   const isMessageLoaded = useMessageStore((state) => state.isMessageLoaded);
 
   const isMessageNewDay = (current, previous) =>
     !previous || !isSameDay(new Date(current.ts), new Date(previous.ts));
-
   return (
     <>
-      {messages.length === 0 ? (
+      {props.messages.length === 0 ? (
         <Box
           css={css`
             text-align: center;
@@ -35,7 +34,7 @@ const MessageList = ({ messages }) => {
         </Box>
       ) : (
         <>
-          {messages.map((msg, index, arr) => {
+          {props.messages.map((msg, index, arr) => {
             const prev = arr[index + 1];
             const next = arr[index - 1];
 
@@ -54,6 +53,7 @@ const MessageList = ({ messages }) => {
                 lastSequential={lastSequential}
                 type="default"
                 showAvatar
+                ref={(el)=>(ref.current[msg._id]=el)}
               />
             );
           })}
@@ -64,7 +64,7 @@ const MessageList = ({ messages }) => {
       )}
     </>
   );
-};
+})
 
 MessageList.propTypes = {
   messages: PropTypes.arrayOf(PropTypes.shape),

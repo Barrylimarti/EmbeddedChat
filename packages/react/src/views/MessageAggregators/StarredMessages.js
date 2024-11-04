@@ -3,7 +3,7 @@ import { useComponentOverrides } from '@embeddedchat/ui-elements';
 import { useUserStore } from '../../store';
 import { MessageAggregator } from './common/MessageAggregator';
 
-const StarredMessages = () => {
+const StarredMessages = ({setSelectedMessageId}) => {
   const authenticatedUserId = useUserStore((state) => state.userId);
   const { variantOverrides } = useComponentOverrides('StarredMessages');
   const viewType = variantOverrides.viewType || 'Sidebar';
@@ -19,6 +19,7 @@ const StarredMessages = () => {
       iconName="star"
       noMessageInfo="No Starred Messages"
       shouldRender={shouldRender}
+      setSelectedMessageId={setSelectedMessageId}
       viewType={viewType}
     />
   );
